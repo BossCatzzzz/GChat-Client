@@ -3,6 +3,7 @@ package GUI;
 import GCLIENT.GClient_Process;
 import com.mycenter.gobject.GPacket;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -71,8 +72,13 @@ public class GChatUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        CLIENT_PROCESS.send(new GPacket("BYE BYE !", LOGIN_GUI.USERNAME));
-        LOGIN_GUI.stop();
+        if (JOptionPane.showConfirmDialog(this, "Bạn có muốn thoát?", "CHÚ Ý", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            CLIENT_PROCESS.send(new GPacket("BYE BYE !", LOGIN_GUI.USERNAME));
+            LOGIN_GUI.stop();
+        }
+        else{
+            return;
+        }
     }//GEN-LAST:event_formWindowClosing
 
     private void listActiveUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listActiveUserMouseClicked
