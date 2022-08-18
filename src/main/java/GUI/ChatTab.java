@@ -42,6 +42,7 @@ public class ChatTab extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablechat = new javax.swing.JTable();
 
+        setEnabled(false);
         setLayout(new java.awt.BorderLayout());
 
         tablechat.setModel(new javax.swing.table.DefaultTableModel(

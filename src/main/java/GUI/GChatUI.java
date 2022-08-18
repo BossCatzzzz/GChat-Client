@@ -2,9 +2,17 @@ package GUI;
 
 import GCLIENT.GClient_Process;
 import com.mycenter.gobject.GPacket;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.DefaultListModel;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,6 +36,35 @@ public class GChatUI extends javax.swing.JFrame {
         MODEL_LIST_ACTIVE_USERs.addElement("<Tất cả>");
         listActiveUser.setSelectedIndex(0);
 
+        int condition = JComponent.WHEN_FOCUSED;
+        InputMap inputMap = mess_textarea.getInputMap(condition);
+        ActionMap actionMap = mess_textarea.getActionMap();
+
+        KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        inputMap.put(enterKey, enterKey.toString());
+        actionMap.put(enterKey.toString(), new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.append(mess_textarea.getText() + "\n");
+
+                String msg = mess_textarea.getText();
+                String target = listActiveUser.getSelectedValue();
+
+                if (!msg.isEmpty() && !target.isEmpty()) {
+                    
+                    CLIENT_PROCESS.send(new GPacket("THIS IS MESSAGE", target, msg));
+                }
+
+//                CLIENT_PROCESS.send(new Package());
+
+                JTextArea txtArea = (JTextArea) e.getSource();
+                txtArea.setText("");
+
+            }
+        });
+
+//        textArea.requestFocus();
         board.append("\n<" + listActiveUser.getSelectedValue() + ">\n");//======================== test ==========================
         //=========================================================================================================================
         mainTabbed.add(listActiveUser.getSelectedValue(), new ChatTab(listActiveUser.getSelectedValue()));// khi form khoi dong thi tao tab dau tien la tab "All"
@@ -62,15 +99,12 @@ public class GChatUI extends javax.swing.JFrame {
         listActiveUser = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         mess_textarea = new javax.swing.JTextArea();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        mess_textpane = new javax.swing.JTextPane();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(850, 580));
+        setMinimumSize(new java.awt.Dimension(545, 750));
+        setPreferredSize(new java.awt.Dimension(545, 750));
         setResizable(false);
-        setSize(new java.awt.Dimension(850, 580));
+        setSize(new java.awt.Dimension(545, 750));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -78,12 +112,13 @@ public class GChatUI extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        board.setEditable(false);
         board.setColumns(20);
         board.setRows(5);
         jScrollPane1.setViewportView(board);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 9, 305, 410));
-        getContentPane().add(mainTabbed, new org.netbeans.lib.awtextra.AbsoluteConstraints(329, 9, 347, 410));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 490, 350, 200));
+        getContentPane().add(mainTabbed, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 347, 410));
 
         listActiveUser.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -97,21 +132,15 @@ public class GChatUI extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(listActiveUser);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(694, 9, 128, 410));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 10, 128, 410));
 
         mess_textarea.setColumns(20);
+        mess_textarea.setLineWrap(true);
         mess_textarea.setRows(5);
+        mess_textarea.setWrapStyleWord(true);
         jScrollPane3.setViewportView(mess_textarea);
 
-        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 437, 305, -1));
-
-        jScrollPane4.setViewportView(mess_textpane);
-
-        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(329, 437, 347, 86));
-
-        jScrollPane5.setViewportView(jTextField2);
-
-        getContentPane().add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 440, 120, 80));
+        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 350, 40));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -146,13 +175,9 @@ public class GChatUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JList<String> listActiveUser;
     private javax.swing.JTabbedPane mainTabbed;
     private javax.swing.JTextArea mess_textarea;
-    private javax.swing.JTextPane mess_textpane;
     // End of variables declaration//GEN-END:variables
 }
 // </editor-fold>

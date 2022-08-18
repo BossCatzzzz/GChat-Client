@@ -2,7 +2,8 @@ package GUI;
 
 import GCLIENT.GClient_Process;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.mycenter.gobject.*;
+import com.mycenter.gobject.GPacket;
+//import com.mycenter.gobject.*;
 import java.awt.geom.FlatteningPathIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;

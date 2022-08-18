@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -167,6 +168,95 @@ public class GClient_Process implements Runnable {
 //                    } else {
 //                        send(new Message("upload_res", ui.username, "NO", msg.sender));
 //                    }
+                    break;
+                case "THIS IS MESSAGE":
+
+                    if (true) {// ai do gui cho minh =======================================================================
+
+//                        ui.TextArea_ChatClient.append("[" + msg.sender + " -> Tôi] : " + msg.content + "\n");
+                        CHAT_GUI.PrintIntoTab(PACKET.getFirst(), PACKET.getLast(), 0);
+                        //========================================================================== khi co tn toi thi 1 cai pn se dc them vao, voi title la ten ng gui toi ======================================================================================================'
+                        //======================================================== 
+//                        ui.jTabbedPane1.add(msg.sender, new ChatPanel(msg.recipient, msg.sender));
+//                        try {
+//                            ChatPanel here = null;
+//                            int index = ui.jTabbedPane1.getTabCount();
+//                            boolean exists = false;
+//                            for (int i = 0; i < ui.jTabbedPane1.getTabCount(); i++) {
+//                                here = (ChatPanel) ui.jTabbedPane1.getComponentAt(i);
+//                                if (here.target.equals(msg.sender)) {
+//                                    exists = true;// da co tab cua user nay roi thi....===========================================
+//                                    index = i;
+//                                    break;
+//                                }
+//                            }
+//                            if (!exists) {
+//                                ui.jTabbedPane1.add(new ChatPanel(msg.recipient, msg.sender), msg.sender, index);
+//                            }
+//
+//                            here = (ChatPanel) ui.jTabbedPane1.getComponentAt(index);
+//
+//                            DefaultTableModel model2 = (DefaultTableModel) here.maintb.getModel();
+//                            model2.addRow(new Object[]{"[" + msg.sender + "]: " + msg.content + "\n", ""});
+//
+//                            notify(index);
+//
+//                        } catch (Exception e) {
+//                            System.out.println("loi o day ne 1:\n" + e.getMessage() + "\n" + e.toString() + "\n" + e.getLocalizedMessage());
+//                        }
+//
+//                        //================================================================================================================================================================================
+//                    } else if (msg.sender.equals(ui.username)) {//============================================================================ minh gui di================================================================================================================
+//                        ui.TextArea_ChatClient.append("[Tôi -> " + msg.recipient + "] : " + msg.content + "\n");
+//
+//                        //=================================================================================================
+//                        try {
+//                            ChatPanel here = null;
+//                            int index = ui.jTabbedPane1.getTabCount();
+//                            boolean exists = false;
+//                            for (int i = 0; i < ui.jTabbedPane1.getTabCount(); i++) {//====================================================xai ham indexoftab thay the vong for nay ==========================
+//                                here = (ChatPanel) ui.jTabbedPane1.getComponentAt(i);
+//                                if (here.target.equals(msg.recipient)) {
+//                                    exists = true;// da co tab cua user nay roi thi....===========================================
+//                                    index = i;
+//                                    break;
+//                                }
+//                            }
+//                            if (!exists) {
+//                                ui.jTabbedPane1.add(new ChatPanel(msg.recipient, msg.sender), msg.sender, index);
+//                            }
+//
+//                            here = (ChatPanel) ui.jTabbedPane1.getComponentAt(index);
+//
+//                            DefaultTableModel model2 = (DefaultTableModel) here.maintb.getModel();
+//                            model2.addRow(new Object[]{"", msg.content + "\n"});
+//
+////                            notify(index);
+//                        } catch (Exception e) {
+//                            System.out.println("loi o day ne 2:\n" + e.getMessage() + "\n" + e.toString() + "\n" + e.getLocalizedMessage());
+//                        }
+//
+//                    } else {///=========================================================================================   ai do gui all ===========================================================================
+//                        ui.TextArea_ChatClient.append("[" + msg.sender + " -> " + msg.recipient + "] : " + msg.content + "\n");
+//
+//                        //================================================================================================================
+//                        try {
+//                            ChatPanel here = (ChatPanel) ui.jTabbedPane1.getComponentAt(0);
+//
+//                            DefaultTableModel model2 = (DefaultTableModel) here.maintb.getModel();
+//                            model2.addRow(new Object[]{"[" + msg.sender + " -> " + msg.recipient + "] : " + msg.content + "\n", ""});
+//
+//                            notify(0);
+//
+//                        } catch (Exception e) {
+//                            System.out.println("loi o day ne 3:\n" + e.getMessage() + "\n" + e.toString() + "\n" + e.getLocalizedMessage());
+//                        }
+                    }
+                    //================================================================================================================
+                    break;
+
+                case "THIS IS MESSAGE FOR ALL":
+                    CHAT_GUI.PrintIntoTab("<Tất cả>", PACKET.getLast(), 0);
                     break;
 
                 default:
