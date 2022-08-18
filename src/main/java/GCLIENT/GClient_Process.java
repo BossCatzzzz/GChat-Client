@@ -256,7 +256,10 @@ public class GClient_Process implements Runnable {
                     break;
 
                 case "THIS IS MESSAGE FOR ALL":
-                    CHAT_GUI.PrintIntoTab("<Tất cả>", PACKET.getLast(), 0);
+                    if (!PACKET.getFirst().equals(LOGIN_GUI.USERNAME)) {
+                        CHAT_GUI.PrintIntoTab("<Tất cả>", PACKET.getLast(), 0);
+                    }
+
                     break;
 
                 default:

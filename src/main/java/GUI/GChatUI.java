@@ -54,6 +54,7 @@ public class GChatUI extends javax.swing.JFrame {
                 if (!msg.isEmpty() && !target.isEmpty()) {
                     
                     CLIENT_PROCESS.send(new GPacket("THIS IS MESSAGE", target, msg));
+                    PrintIntoTab(target, msg, 1);
                 }
 
 //                CLIENT_PROCESS.send(new Package());
