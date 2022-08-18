@@ -3,11 +3,13 @@ package GCLIENT;
 import GUI.GChatUI;
 import GUI.GLoginUI;
 import com.mycenter.gobject.GPacket;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,13 +17,13 @@ import javax.swing.JOptionPane;
  * @author Gic
  */
 public class GClient_Process implements Runnable {
-    
+
     GLoginUI LOGIN_GUI = null;
     GChatUI CHAT_GUI = null;
     Socket CLIENT_SOCKET = null;
     ObjectInputStream IN;
     ObjectOutputStream OUT;
-    
+
     public GClient_Process(GLoginUI t) {
         LOGIN_GUI = t;
         boolean connected = false;
@@ -52,7 +54,7 @@ public class GClient_Process implements Runnable {
         }
 //        hist = ui.hist;
     }
-    
+
     @Override
     public void run() {
         boolean keepRunning = true;
@@ -142,15 +144,37 @@ public class GClient_Process implements Runnable {
                         //test ===>>> that ra if nay khong bh chay 
                     } else {
                         CHAT_GUI.MODEL_LIST_ACTIVE_USERs.removeElement(PACKET.getFirst());
-                        CHAT_GUI.tbmain.append("\n[" + PACKET.getFirst() + " đã thoát]\n");
+                        CHAT_GUI.board.append("\n[" + PACKET.getFirst() + " đã thoát]\n");
+                        CHAT_GUI.PrintIntoTab(PACKET.getFirst(), "\n[" + PACKET.getFirst() + " đã thoát]\n", 0);
                     }
                     break;
+                case "THIS IS FILE":
+//                    if (JOptionPane.showConfirmDialog(CHAT_GUI, ("Chấp nhận '" + PACKET.getLast() + "' từ " + msg.sender + " không?")) == 0) {
+//                        JFileChooser jf = new JFileChooser();
+//                        jf.setSelectedFile(new File(msg.content));
+//                        int returnVal = jf.showSaveDialog(ui);
+//
+//                        String saveTo = jf.getSelectedFile().getPath();
+//                        if (saveTo != null && returnVal == JFileChooser.APPROVE_OPTION) {
+//                            System.out.println(">>>>>>>>>>>>>" + msg.sender);
+//                            Download dwn = new Download(msg.sender, saveTo, ui);
+//                            Thread t = new Thread(dwn);
+//                            t.start();
+//                            send(new Message("upload_res", ui.username, ("" + dwn.port), msg.sender));
+//                        } else {
+//                            send(new Message("upload_res", ui.username, "NO", msg.sender));
+//                        }
+//                    } else {
+//                        send(new Message("upload_res", ui.username, "NO", msg.sender));
+//                    }
+                    break;
+
                 default:
                     System.out.println("\nGoi chua xac dinh~~~~~~~~~~~~~~\n");
             }
         }// het wihle ========================================================================
     }
-    
+
     public void send(GPacket pck) {
         try {
             OUT.writeObject(pck);
