@@ -7,6 +7,7 @@ import com.mycenter.gobject.GPacket;
 import java.awt.geom.FlatteningPathIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -65,6 +66,11 @@ public class GLoginUI extends javax.swing.JFrame {
         tbPassword = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Connect to Server"));
         jPanel1.setLayout(new java.awt.GridLayout(1, 0));
@@ -226,6 +232,16 @@ public class GLoginUI extends javax.swing.JFrame {
         }
         CLIENT_PROCESS.send(new GPacket("I WANT TO REGISTER A NEW ACCOUNT !", USERNAME, PASSWORD));
     }//GEN-LAST:event_btRegisterActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (JOptionPane.showConfirmDialog(this, "Bạn có muốn thoát?", "CHÚ Ý", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+//            CLIENT_PROCESS.send(new GPacket("BYE BYE !", USERNAME));
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            stop();
+        } else {
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        }
+    }//GEN-LAST:event_formWindowClosing
 
 //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
     public static void main(String args[]) {
