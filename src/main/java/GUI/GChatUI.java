@@ -52,13 +52,12 @@ public class GChatUI extends javax.swing.JFrame {
                 String target = listActiveUser.getSelectedValue();
 
                 if (!msg.isEmpty() && !target.isEmpty()) {
-                    
+
                     CLIENT_PROCESS.send(new GPacket("THIS IS MESSAGE", target, msg));
                     PrintIntoTab(target, msg, 1);
                 }
 
 //                CLIENT_PROCESS.send(new Package());
-
                 JTextArea txtArea = (JTextArea) e.getSource();
                 txtArea.setText("");
 
@@ -88,6 +87,19 @@ public class GChatUI extends javax.swing.JFrame {
             model_table_chat.addRow(new Object[]{"", content});
         }
     }
+/**
+ * 
+ * @param who : username muon tim kiem
+ * @return true khi co tab voi user name nay
+ * @return false khi khong co tab nay
+ */
+    public boolean findTab(String who) {
+        int index = mainTabbed.indexOfTab(who);
+        if (index == -1) {
+            return false;
+        }
+        return true;
+    }
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -100,10 +112,10 @@ public class GChatUI extends javax.swing.JFrame {
         listActiveUser = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         mess_textarea = new javax.swing.JTextArea();
+        bthihi = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(545, 750));
-        setPreferredSize(new java.awt.Dimension(545, 750));
         setResizable(false);
         setSize(new java.awt.Dimension(545, 750));
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -143,6 +155,14 @@ public class GChatUI extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 350, 40));
 
+        bthihi.setText("hihi");
+        bthihi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bthihiActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bthihi, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 740, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -169,10 +189,16 @@ public class GChatUI extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_listActiveUserMouseClicked
+
+    private void bthihiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bthihiActionPerformed
+        CLIENT_PROCESS.send(new GPacket("LOGOUT"));
+        CLIENT_PROCESS.LogOut();
+    }//GEN-LAST:event_bthihiActionPerformed
 //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JTextArea board;
+    private javax.swing.JButton bthihi;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
