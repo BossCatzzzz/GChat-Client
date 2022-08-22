@@ -31,6 +31,7 @@ public class GClient_Process implements Runnable {
         for (int i = 0; i < 10; i++) {
             try {
                 CLIENT_SOCKET = new Socket(InetAddress.getByName(LOGIN_GUI.getIP()), LOGIN_GUI.getPort());// *********************************************************************
+//                CLIENT_SOCKET = new Socket(InetAddress.getByName(LOGIN_GUI.getIP()), LOGIN_GUI.getPort(),InetAddress.getByName(LOGIN_GUI.getIP()),56698);
                 connected = true;
                 break;
             } catch (IOException iOException) {
