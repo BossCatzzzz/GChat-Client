@@ -136,9 +136,9 @@ public class GClient_Process implements Runnable {
 //                        if (!exists) { // neu user moi login/signin là user moi thi add vao list dang online
 //                            ui.model.addElement(msg.content);
 //                        }
-                        if (CHAT_GUI.MODEL_LIST_ACTIVE_USERs.indexOf(PACKET.getFirst()) == -1) {// chua co element nay trong list
+//                        if (CHAT_GUI.MODEL_LIST_ACTIVE_USERs.indexOf(PACKET.getFirst()) == -1) {// chua co element nay trong list
                             CHAT_GUI.MODEL_LIST_ACTIVE_USERs.addElement(PACKET.getFirst());
-                        }
+//                        }
                         if (CHAT_GUI.findTab(PACKET.getFirst()) != null) {
                             CHAT_GUI.findTab(PACKET.getFirst()).SetEnableInput(true);
                         }
