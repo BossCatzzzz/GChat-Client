@@ -18,13 +18,13 @@ import javax.swing.table.DefaultTableModel;
  * @author Gic
  */
 public class GClient_Process implements Runnable {
-    
+
     GLoginUI LOGIN_GUI = null;
     GChatUI CHAT_GUI = null;
     Socket CLIENT_SOCKET = null;
     ObjectInputStream IN;
     ObjectOutputStream OUT;
-    
+
     public GClient_Process(GLoginUI t) {
         LOGIN_GUI = t;
         boolean connected = false;
@@ -56,7 +56,7 @@ public class GClient_Process implements Runnable {
         }
 //        hist = ui.hist;
     }
-    
+
     @Override
     public void run() {
         boolean keepRunning = true;
@@ -139,6 +139,9 @@ public class GClient_Process implements Runnable {
                         if (CHAT_GUI.MODEL_LIST_ACTIVE_USERs.indexOf(PACKET.getFirst()) == -1) {// chua co element nay trong list
                             CHAT_GUI.MODEL_LIST_ACTIVE_USERs.addElement(PACKET.getFirst());
                         }
+                        if (CHAT_GUI.findTab(PACKET.getFirst()) != null) {
+                            CHAT_GUI.findTab(PACKET.getFirst()).SetEnableInput(true);
+                        }
                     }
                     break;
                 case "LOGOUT USERs":
@@ -147,8 +150,9 @@ public class GClient_Process implements Runnable {
                     } else {
                         CHAT_GUI.MODEL_LIST_ACTIVE_USERs.removeElement(PACKET.getFirst());
                         CHAT_GUI.board.append("\n[" + PACKET.getFirst() + " đã thoát]\n");
-                        if (CHAT_GUI.findTab(PACKET.getFirst())) {
+                        if (CHAT_GUI.findTab(PACKET.getFirst()) != null) {
                             CHAT_GUI.PrintIntoTab(PACKET.getFirst(), "\n[" + PACKET.getFirst() + " đã thoát]\n", 0);
+                            CHAT_GUI.findTab(PACKET.getFirst()).SetEnableInput(false);
                         } else {
                             CHAT_GUI.PrintIntoTab("<Tất cả>", "\n[" + PACKET.getFirst() + " đã thoát]\n", 0);
                         }
@@ -175,7 +179,7 @@ public class GClient_Process implements Runnable {
 //                    }
                     break;
                 case "THIS IS MESSAGE":
-                    
+
                     if (true) {// ai do gui cho minh =======================================================================
 
 //                        ui.TextArea_ChatClient.append("[" + msg.sender + " -> Tôi] : " + msg.content + "\n");
@@ -259,20 +263,20 @@ public class GClient_Process implements Runnable {
                     }
                     //================================================================================================================
                     break;
-                
+
                 case "THIS IS MESSAGE FOR ALL":
                     if (!PACKET.getFirst().equals(LOGIN_GUI.USERNAME)) {
                         CHAT_GUI.PrintIntoTab("<Tất cả>", PACKET.getLast(), 0);
                     }
-                    
+
                     break;
-                
+
                 default:
                     System.out.println("\nGoi chua xac dinh~~~~~~~~~~~~~~\n");
             }
         }// het wihle ========================================================================
     }
-    
+
     public void send(GPacket pck) {
         try {
             OUT.writeObject(pck);
@@ -292,9 +296,9 @@ public class GClient_Process implements Runnable {
             System.out.println("\nLỗi gửi goi tin\n" + ex.getMessage());
         }
     }
-    
+
     public void LogOut() {
-        
+
         LOGIN_GUI.tbUsername.setEnabled(true);
         LOGIN_GUI.tbPassword.setEnabled(true);
         LOGIN_GUI.btRegister.setEnabled(true);

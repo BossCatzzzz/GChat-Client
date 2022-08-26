@@ -1,15 +1,26 @@
 package GUI;
 
+import GCLIENT.GClient_Process;
+import com.mycenter.gobject.GPacket;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -19,8 +30,9 @@ import javax.swing.table.TableCellRenderer;
 public class ChatTab extends javax.swing.JPanel {
 
     String title = "";
+    GClient_Process CLIENT_PROCESS = null;
 
-    public ChatTab(String who) {
+    public ChatTab(String who, GClient_Process pc) {
         initComponents();
         TextAreaCellRenderer renderer = new TextAreaCellRenderer();
         tablechat.getColumnModel().getColumn(0).setCellRenderer(renderer);
@@ -30,27 +42,53 @@ public class ChatTab extends javax.swing.JPanel {
 
         tablechat.setTableHeader(null);
 
+        EnterKey();
+
         title = who;
+        CLIENT_PROCESS = pc;
 //        target = to;
 //        this.me = me;
     }
 
+    void EnterKey() {
+        int condition = JComponent.WHEN_FOCUSED;
+        InputMap inputMap = mess.getInputMap(condition);
+        ActionMap actionMap = mess.getActionMap();
+        KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        inputMap.put(enterKey, enterKey.toString());
+        actionMap.put(enterKey.toString(), new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultTableModel model_table_chat = (DefaultTableModel) tablechat.getModel();
+                String msg = mess.getText();
+                if (!msg.isEmpty() && !msg.isBlank() && !title.isEmpty()) {
+                    CLIENT_PROCESS.send(new GPacket("THIS IS MESSAGE", title, msg));
+                    model_table_chat.addRow(new Object[]{"", mess.getText()});
+                }
+                mess.setText("");
+            }
+        }
+        );
+    }
+
+   public void SetEnableInput(boolean en){
+        mess.setEnabled(en);
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tablechat = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        mess = new javax.swing.JTextArea();
 
         setEnabled(false);
         setLayout(new java.awt.BorderLayout());
 
         tablechat.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "", ""
@@ -81,6 +119,14 @@ public class ChatTab extends javax.swing.JPanel {
         }
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        mess.setColumns(20);
+        mess.setLineWrap(true);
+        mess.setRows(1);
+        mess.setWrapStyleWord(true);
+        jScrollPane2.setViewportView(mess);
+
+        add(jScrollPane2, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tablechatMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablechatMousePressed
@@ -98,6 +144,8 @@ public class ChatTab extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea mess;
     public javax.swing.JTable tablechat;
     // End of variables declaration//GEN-END:variables
 }
@@ -216,3 +264,36 @@ class TextAreaCellRenderer extends JTextArea implements TableCellRenderer {
     // <---- Overridden for performance reasons.
 }
 // </editor-fold> 
+
+//class MyTableModel extends DefaultTableModel {
+//
+//    List<Color> rowColours = Arrays.asList(
+//            Color.RED,
+//            Color.GREEN,
+//            Color.CYAN
+//    );
+//
+//    public void setRowColour(int row, Color c) {
+//        rowColours.set(row, c);
+//        fireTableRowsUpdated(row, row);
+//    }
+//
+//    public Color getRowColour(int row) {
+//        return rowColours.get(row);
+//    }
+//
+//    @Override
+//    public int getRowCount() {
+//        return 3;
+//    }
+//
+//    @Override
+//    public int getColumnCount() {
+//        return 3;
+//    }
+//
+//    @Override
+//    public Object getValueAt(int row, int column) {
+//        return String.format("%d %d", row, column);
+//    }
+//}

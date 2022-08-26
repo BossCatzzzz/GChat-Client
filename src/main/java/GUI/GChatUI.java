@@ -35,50 +35,17 @@ public class GChatUI extends javax.swing.JFrame {
         listActiveUser.setModel(MODEL_LIST_ACTIVE_USERs = new DefaultListModel());
         MODEL_LIST_ACTIVE_USERs.addElement("<Tất cả>");
         listActiveUser.setSelectedIndex(0);
-
-        int condition = JComponent.WHEN_FOCUSED;
-        InputMap inputMap = mess_textarea.getInputMap(condition);
-        ActionMap actionMap = mess_textarea.getActionMap();
-
-        KeyStroke enterKey = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        inputMap.put(enterKey, enterKey.toString());
-        actionMap.put(enterKey.toString(), new AbstractAction() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                board.append(mess_textarea.getText() + "\n");
-
-                String msg = mess_textarea.getText();
-                String target = listActiveUser.getSelectedValue();
-
-                if (!msg.isEmpty() && !target.isEmpty()) {
-
-                    CLIENT_PROCESS.send(new GPacket("THIS IS MESSAGE", target, msg));
-                    PrintIntoTab(target, msg, 1);
-                }
-
-//                CLIENT_PROCESS.send(new Package());
-                JTextArea txtArea = (JTextArea) e.getSource();
-                txtArea.setText("");
-
-            }
-        });
-
 //        textArea.requestFocus();
         board.append("\n<" + listActiveUser.getSelectedValue() + ">\n");//======================== test ==========================
         //=========================================================================================================================
-        mainTabbed.add(listActiveUser.getSelectedValue(), new ChatTab(listActiveUser.getSelectedValue()));// khi form khoi dong thi tao tab dau tien la tab "All"
+        mainTabbed.add(listActiveUser.getSelectedValue(), new ChatTab(listActiveUser.getSelectedValue(), CLIENT_PROCESS));// khi form khoi dong thi tao tab dau tien la tab "All"
 
     }
 
     public void PrintIntoTab(String who, String content, int lr) {
-        ChatTab here = null;
-        int index = mainTabbed.indexOfTab(who);
-        if (index == -1) {// chua co tab voi nguoi nay
-            index = mainTabbed.getTabCount();
-            here = (ChatTab) mainTabbed.add(who, new ChatTab(who));
-        } else {
-            here = (ChatTab) mainTabbed.getComponent(index);
+        ChatTab here = findTab(who);
+        if (here == null) {// chua co tab voi nguoi nay
+            here = (ChatTab) mainTabbed.add(who, new ChatTab(who, CLIENT_PROCESS));
         }
         DefaultTableModel model_table_chat = (DefaultTableModel) here.tablechat.getModel();
         if (lr == 0) {
@@ -87,18 +54,20 @@ public class GChatUI extends javax.swing.JFrame {
             model_table_chat.addRow(new Object[]{"", content});
         }
     }
-/**
- * 
- * @param who : username muon tim kiem
- * @return true khi co tab voi user name nay
- * @return false khi khong co tab nay
- */
-    public boolean findTab(String who) {
+
+
+
+    public ChatTab findTab(String who) {
         int index = mainTabbed.indexOfTab(who);
-        if (index == -1) {
-            return false;
+        ChatTab here = null;
+        if (index != -1) {
+            here = (ChatTab) mainTabbed.getComponent(index);
         }
-        return true;
+        return here;
+    }
+
+    public void SetEnableInput(boolean en) {
+
     }
 
 
@@ -110,12 +79,11 @@ public class GChatUI extends javax.swing.JFrame {
         mainTabbed = new javax.swing.JTabbedPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         listActiveUser = new javax.swing.JList<>();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        mess_textarea = new javax.swing.JTextArea();
         bthihi = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(545, 750));
+        setPreferredSize(new java.awt.Dimension(748, 750));
         setResizable(false);
         setSize(new java.awt.Dimension(545, 750));
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -123,15 +91,13 @@ public class GChatUI extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         board.setEditable(false);
         board.setColumns(20);
         board.setRows(5);
         jScrollPane1.setViewportView(board);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 490, 350, 200));
-        getContentPane().add(mainTabbed, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 347, 410));
+        mainTabbed.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
 
         listActiveUser.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -145,23 +111,42 @@ public class GChatUI extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(listActiveUser);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 10, 128, 410));
-
-        mess_textarea.setColumns(20);
-        mess_textarea.setLineWrap(true);
-        mess_textarea.setRows(5);
-        mess_textarea.setWrapStyleWord(true);
-        jScrollPane3.setViewportView(mess_textarea);
-
-        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 350, 40));
-
         bthihi.setText("hihi");
         bthihi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bthihiActionPerformed(evt);
             }
         });
-        getContentPane().add(bthihi, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 740, -1, -1));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(bthihi))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(mainTabbed, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(mainTabbed, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bthihi)))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -182,7 +167,7 @@ public class GChatUI extends javax.swing.JFrame {
         int index = mainTabbed.indexOfTab(select);
         if (index == -1) {
             index = mainTabbed.getTabCount();
-            mainTabbed.add(select, new ChatTab(select));
+            mainTabbed.add(select, new ChatTab(select, CLIENT_PROCESS));
 
         }
         mainTabbed.setSelectedIndex(index);
@@ -201,10 +186,8 @@ public class GChatUI extends javax.swing.JFrame {
     private javax.swing.JButton bthihi;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JList<String> listActiveUser;
     private javax.swing.JTabbedPane mainTabbed;
-    private javax.swing.JTextArea mess_textarea;
     // End of variables declaration//GEN-END:variables
 }
 // </editor-fold>
