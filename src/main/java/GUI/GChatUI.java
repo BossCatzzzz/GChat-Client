@@ -2,17 +2,13 @@ package GUI;
 
 import GCLIENT.GClient_Process;
 import com.mycenter.gobject.GPacket;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.DefaultListModel;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -30,16 +26,27 @@ public class GChatUI extends javax.swing.JFrame {
         CLIENT_PROCESS = pc;
         LOGIN_GUI = top_ui;
         setLocationRelativeTo(null);
-
         this.setTitle(top_ui.USERNAME);
+        
         listActiveUser.setModel(MODEL_LIST_ACTIVE_USERs = new DefaultListModel());
-        MODEL_LIST_ACTIVE_USERs.addElement("<Tất cả>");
-        listActiveUser.setSelectedIndex(0);
+//        MODEL_LIST_ACTIVE_USERs.addElement("<Tất cả>");
+//        listActiveUser.setSelectedIndex(0);
 //        textArea.requestFocus();
         board.append("\n<" + listActiveUser.getSelectedValue() + ">\n");//======================== test ==========================
-        //=========================================================================================================================
-        mainTabbed.add(listActiveUser.getSelectedValue(), new ChatTab(listActiveUser.getSelectedValue(), CLIENT_PROCESS));// khi form khoi dong thi tao tab dau tien la tab "All"
-
+        mainTabbed.add("<Tất cả>", new ChatTab("<Tất cả>", CLIENT_PROCESS));// khi form khoi dong thi tao tab dau tien la tab "All"
+        
+//============================ su kien re chuot qua item ======================================
+        listActiveUser.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent me) {
+                Point p = me.getPoint();
+                listActiveUser.setSelectedIndex(listActiveUser.locationToIndex(p));
+                listActiveUser.setSelectionForeground(Color.RED);
+                listActiveUser.setSelectionBackground(Color.BLUE);
+                System.out.println("" + listActiveUser.getSelectedValue());
+            }
+        });
+//=============================================================================================        
     }
 
     public void PrintIntoTab(String who, String content, int lr) {
@@ -55,8 +62,6 @@ public class GChatUI extends javax.swing.JFrame {
         }
     }
 
-
-
     public ChatTab findTab(String who) {
         int index = mainTabbed.indexOfTab(who);
         ChatTab here = null;
@@ -64,10 +69,6 @@ public class GChatUI extends javax.swing.JFrame {
             here = (ChatTab) mainTabbed.getComponent(index);
         }
         return here;
-    }
-
-    public void SetEnableInput(boolean en) {
-
     }
 
 
@@ -98,15 +99,32 @@ public class GChatUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(board);
 
         mainTabbed.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        mainTabbed.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mainTabbedMouseClicked(evt);
+            }
+        });
 
+        listActiveUser.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Đang online", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("sansserif", 0, 12), new java.awt.Color(0, 127, 5))); // NOI18N
+        listActiveUser.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         listActiveUser.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "<All>" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        listActiveUser.setToolTipText("Người dùng đang hoạt động");
+        listActiveUser.setFocusable(false);
+        listActiveUser.setRequestFocusEnabled(false);
+        listActiveUser.setSelectionBackground(new java.awt.Color(69, 73, 74));
         listActiveUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listActiveUserMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                listActiveUserMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                listActiveUserMouseExited(evt);
             }
         });
         jScrollPane2.setViewportView(listActiveUser);
@@ -141,7 +159,7 @@ public class GChatUI extends javax.swing.JFrame {
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(mainTabbed, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -172,13 +190,35 @@ public class GChatUI extends javax.swing.JFrame {
         }
         mainTabbed.setSelectedIndex(index);
 
-
     }//GEN-LAST:event_listActiveUserMouseClicked
 
     private void bthihiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bthihiActionPerformed
         CLIENT_PROCESS.send(new GPacket("LOGOUT"));
         CLIENT_PROCESS.LogOut();
     }//GEN-LAST:event_bthihiActionPerformed
+
+    private void listActiveUserMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listActiveUserMouseEntered
+        System.out.println(listActiveUser.getSelectedValue());
+
+    }//GEN-LAST:event_listActiveUserMouseEntered
+
+    private void listActiveUserMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listActiveUserMouseExited
+        listActiveUser.setSelectionForeground(new Color(187, 187, 187));
+        listActiveUser.setSelectionBackground(new Color(69, 73, 74));
+        System.out.println("tab count :"+mainTabbed.getTabCount());
+        System.out.println("cpn count:"+mainTabbed.getComponentCount());
+//        for (int i = 0; i < mainTabbed.getTabCount(); i++) {
+//            mainTabbed.getComponentAt(i).setForeground(new Color(187, 187, 187));
+//        }
+//        mainTabbed.setForegroundAt(mainTabbed.getSelectedIndex(), Color.CYAN);
+    }//GEN-LAST:event_listActiveUserMouseExited
+
+    private void mainTabbedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainTabbedMouseClicked
+//        for (int i = 0; i < mainTabbed.getTabCount(); i++) {
+//            mainTabbed.getComponentAt(i).setForeground(new Color(187, 187, 187));
+//        }
+        mainTabbed.setForegroundAt(mainTabbed.getSelectedIndex(), new Color(187,187,187));
+    }//GEN-LAST:event_mainTabbedMouseClicked
 //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -187,7 +227,7 @@ public class GChatUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList<String> listActiveUser;
-    private javax.swing.JTabbedPane mainTabbed;
+    public javax.swing.JTabbedPane mainTabbed;
     // End of variables declaration//GEN-END:variables
 }
 // </editor-fold>

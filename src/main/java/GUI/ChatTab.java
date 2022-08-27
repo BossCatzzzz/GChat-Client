@@ -9,7 +9,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.AbstractAction;
@@ -71,7 +70,7 @@ public class ChatTab extends javax.swing.JPanel {
         );
     }
 
-   public void SetEnableInput(boolean en){
+    public void SetEnableInput(boolean en) {
         mess.setEnabled(en);
     }
 
@@ -84,6 +83,11 @@ public class ChatTab extends javax.swing.JPanel {
         mess = new javax.swing.JTextArea();
 
         setEnabled(false);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
         setLayout(new java.awt.BorderLayout());
 
         tablechat.setModel(new javax.swing.table.DefaultTableModel(
@@ -124,6 +128,11 @@ public class ChatTab extends javax.swing.JPanel {
         mess.setLineWrap(true);
         mess.setRows(1);
         mess.setWrapStyleWord(true);
+        mess.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                messMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(mess);
 
         add(jScrollPane2, java.awt.BorderLayout.PAGE_END);
@@ -140,6 +149,16 @@ public class ChatTab extends javax.swing.JPanel {
     private void tablechatFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tablechatFocusGained
         System.out.println("focus\n");
     }//GEN-LAST:event_tablechatFocusGained
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+
+        System.out.println("form mouse press\n");
+    }//GEN-LAST:event_formMouseClicked
+
+    private void messMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_messMouseClicked
+        CLIENT_PROCESS.un_notify(0);
+        System.out.println("mess mouse press\n");
+    }//GEN-LAST:event_messMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

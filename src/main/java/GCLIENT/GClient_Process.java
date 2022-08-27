@@ -3,15 +3,15 @@ package GCLIENT;
 import GUI.GChatUI;
 import GUI.GLoginUI;
 import com.mycenter.gobject.GPacket;
-import java.io.File;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import javax.swing.JFileChooser;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -125,20 +125,7 @@ public class GClient_Process implements Runnable {
                     break;
                 case "ACTIVE USERs":
                     if (!PACKET.getFirst().equals(LOGIN_GUI.USERNAME)) {// neu ma nhan dc new logged la chinh minh thi thoi
-
-//                        boolean exists = false;
-//                        for (int i = 0; i < CHAT_GUI.MODEL_LIST_ACTIVE_USERs.getSize(); i++) {// xet qua het tat ca cac user dang online...
-//                            if (CHAT_GUI.MODEL_LIST_ACTIVE_USERs.getElementAt(i).equals(PACKET.getFirst())) {// neu co user nay roi thi ... exists = true
-//                                exists = true;
-//                                break;
-//                            }
-//                        }
-//                        if (!exists) { // neu user moi login/signin là user moi thi add vao list dang online
-//                            ui.model.addElement(msg.content);
-//                        }
-//                        if (CHAT_GUI.MODEL_LIST_ACTIVE_USERs.indexOf(PACKET.getFirst()) == -1) {// chua co element nay trong list
-                            CHAT_GUI.MODEL_LIST_ACTIVE_USERs.addElement(PACKET.getFirst());
-//                        }
+                        CHAT_GUI.MODEL_LIST_ACTIVE_USERs.addElement(PACKET.getFirst());
                         if (CHAT_GUI.findTab(PACKET.getFirst()) != null) {
                             CHAT_GUI.findTab(PACKET.getFirst()).SetEnableInput(true);
                         }
@@ -178,97 +165,17 @@ public class GClient_Process implements Runnable {
 //                        send(new Message("upload_res", ui.username, "NO", msg.sender));
 //                    }
                     break;
+
                 case "THIS IS MESSAGE":
-
-                    if (true) {// ai do gui cho minh =======================================================================
-
-//                        ui.TextArea_ChatClient.append("[" + msg.sender + " -> Tôi] : " + msg.content + "\n");
-                        CHAT_GUI.PrintIntoTab(PACKET.getFirst(), PACKET.getLast(), 0);
-                        //========================================================================== khi co tn toi thi 1 cai pn se dc them vao, voi title la ten ng gui toi ======================================================================================================'
-                        //======================================================== 
-//                        ui.jTabbedPane1.add(msg.sender, new ChatPanel(msg.recipient, msg.sender));
-//                        try {
-//                            ChatPanel here = null;
-//                            int index = ui.jTabbedPane1.getTabCount();
-//                            boolean exists = false;
-//                            for (int i = 0; i < ui.jTabbedPane1.getTabCount(); i++) {
-//                                here = (ChatPanel) ui.jTabbedPane1.getComponentAt(i);
-//                                if (here.target.equals(msg.sender)) {
-//                                    exists = true;// da co tab cua user nay roi thi....===========================================
-//                                    index = i;
-//                                    break;
-//                                }
-//                            }
-//                            if (!exists) {
-//                                ui.jTabbedPane1.add(new ChatPanel(msg.recipient, msg.sender), msg.sender, index);
-//                            }
-//
-//                            here = (ChatPanel) ui.jTabbedPane1.getComponentAt(index);
-//
-//                            DefaultTableModel model2 = (DefaultTableModel) here.maintb.getModel();
-//                            model2.addRow(new Object[]{"[" + msg.sender + "]: " + msg.content + "\n", ""});
-//
-//                            notify(index);
-//
-//                        } catch (Exception e) {
-//                            System.out.println("loi o day ne 1:\n" + e.getMessage() + "\n" + e.toString() + "\n" + e.getLocalizedMessage());
-//                        }
-//
-//                        //================================================================================================================================================================================
-//                    } else if (msg.sender.equals(ui.username)) {//============================================================================ minh gui di================================================================================================================
-//                        ui.TextArea_ChatClient.append("[Tôi -> " + msg.recipient + "] : " + msg.content + "\n");
-//
-//                        //=================================================================================================
-//                        try {
-//                            ChatPanel here = null;
-//                            int index = ui.jTabbedPane1.getTabCount();
-//                            boolean exists = false;
-//                            for (int i = 0; i < ui.jTabbedPane1.getTabCount(); i++) {//====================================================xai ham indexoftab thay the vong for nay ==========================
-//                                here = (ChatPanel) ui.jTabbedPane1.getComponentAt(i);
-//                                if (here.target.equals(msg.recipient)) {
-//                                    exists = true;// da co tab cua user nay roi thi....===========================================
-//                                    index = i;
-//                                    break;
-//                                }
-//                            }
-//                            if (!exists) {
-//                                ui.jTabbedPane1.add(new ChatPanel(msg.recipient, msg.sender), msg.sender, index);
-//                            }
-//
-//                            here = (ChatPanel) ui.jTabbedPane1.getComponentAt(index);
-//
-//                            DefaultTableModel model2 = (DefaultTableModel) here.maintb.getModel();
-//                            model2.addRow(new Object[]{"", msg.content + "\n"});
-//
-////                            notify(index);
-//                        } catch (Exception e) {
-//                            System.out.println("loi o day ne 2:\n" + e.getMessage() + "\n" + e.toString() + "\n" + e.getLocalizedMessage());
-//                        }
-//
-//                    } else {///=========================================================================================   ai do gui all ===========================================================================
-//                        ui.TextArea_ChatClient.append("[" + msg.sender + " -> " + msg.recipient + "] : " + msg.content + "\n");
-//
-//                        //================================================================================================================
-//                        try {
-//                            ChatPanel here = (ChatPanel) ui.jTabbedPane1.getComponentAt(0);
-//
-//                            DefaultTableModel model2 = (DefaultTableModel) here.maintb.getModel();
-//                            model2.addRow(new Object[]{"[" + msg.sender + " -> " + msg.recipient + "] : " + msg.content + "\n", ""});
-//
-//                            notify(0);
-//
-//                        } catch (Exception e) {
-//                            System.out.println("loi o day ne 3:\n" + e.getMessage() + "\n" + e.toString() + "\n" + e.getLocalizedMessage());
-//                        }
-                    }
-                    //================================================================================================================
+                    CHAT_GUI.PrintIntoTab(PACKET.getFirst(), PACKET.getLast(), 0);
+                    notify(CHAT_GUI.mainTabbed.indexOfTab(PACKET.getFirst()));
                     break;
 
                 case "THIS IS MESSAGE FOR ALL":
                     if (!PACKET.getFirst().equals(LOGIN_GUI.USERNAME)) {
                         CHAT_GUI.PrintIntoTab("<Tất cả>", PACKET.getLast(), 0);
+                        notify(0);
                     }
-
                     break;
 
                 default:
@@ -282,16 +189,6 @@ public class GClient_Process implements Runnable {
             OUT.writeObject(pck);
             OUT.flush();
             System.out.println("\n" + pck.toString() + " >>>>>\n");
-
-//            if (pck.type.equals("message") && !pck.content.equals(".bye")) {
-//                String msgTime = (new Date()).toString();
-//                try {
-////                    hist.addMessage(pck, msgTime);
-//                    DefaultTableModel table = (DefaultTableModel) ui.historyFrame.table_History.getModel();
-//                    table.addRow(new Object[]{"Me", pck.content, pck.recipient, msgTime});
-//                } catch (Exception ex) {
-//                }
-//            }
         } catch (IOException ex) {
             System.out.println("\nLỗi gửi goi tin\n" + ex.getMessage());
         }
@@ -310,5 +207,26 @@ public class GClient_Process implements Runnable {
         CHAT_GUI.dispose();
         CHAT_GUI = null;
         LOGIN_GUI.show();
+    }
+
+    private void notify(int indexOfTab) {
+        try {
+            Thread th = Thread.currentThread();
+            CHAT_GUI.mainTabbed.setForegroundAt(indexOfTab, Color.RED);
+            th.sleep(200);
+            CHAT_GUI.mainTabbed.setForegroundAt(indexOfTab, Color.CYAN);
+            th.sleep(200);
+            CHAT_GUI.mainTabbed.setForegroundAt(indexOfTab, Color.RED);
+            th.sleep(200);
+            CHAT_GUI.mainTabbed.setForegroundAt(indexOfTab, Color.CYAN);
+            th.sleep(200);
+            CHAT_GUI.mainTabbed.setForegroundAt(indexOfTab, Color.RED);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GClient_Process.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+   public  void un_notify(int index) {
+        CHAT_GUI.mainTabbed.setForegroundAt(CHAT_GUI.mainTabbed.getSelectedIndex(), new Color(187, 187, 187));
     }
 }

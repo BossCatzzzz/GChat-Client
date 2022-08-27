@@ -40,9 +40,10 @@ public class GLoginUI extends javax.swing.JFrame {
     }
 
     public void stop() {
-        THREAD_TO_RUN_THIS_PROCESS.stop();
+//        THREAD_TO_RUN_THIS_PROCESS.stop();
         THREAD_TO_RUN_THIS_PROCESS = null;
         CLIENT_PROCESS = null;
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.dispose();
     }
 
