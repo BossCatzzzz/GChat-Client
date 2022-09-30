@@ -4,8 +4,6 @@ import GCLIENT.GClient_Process;
 import com.mycenter.gobject.GPacket;
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -17,9 +15,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class GChatUI extends javax.swing.JFrame {
 
-    GClient_Process CLIENT_PROCESS = null;
-    GLoginUI LOGIN_GUI = null;
-    public DefaultListModel MODEL_LIST_ACTIVE_USERs = null;
+    GClient_Process CLIENT_PROCESS = null;// chua tien trinh client
+    GLoginUI LOGIN_GUI = null;// lay ra form login
+    public DefaultListModel MODEL_LIST_ACTIVE_USERs = null;// model nay cho list dang online
 
     public GChatUI(GLoginUI top_ui, GClient_Process pc) {
         initComponents();
@@ -27,48 +25,46 @@ public class GChatUI extends javax.swing.JFrame {
         LOGIN_GUI = top_ui;
         setLocationRelativeTo(null);
         this.setTitle(top_ui.USERNAME);
-        
+
         listActiveUser.setModel(MODEL_LIST_ACTIVE_USERs = new DefaultListModel());
-//        MODEL_LIST_ACTIVE_USERs.addElement("<Tất cả>");
-//        listActiveUser.setSelectedIndex(0);
-//        textArea.requestFocus();
         board.append("\n<" + listActiveUser.getSelectedValue() + ">\n");//======================== test ==========================
         mainTabbed.add("<Tất cả>", new ChatTab("<Tất cả>", CLIENT_PROCESS));// khi form khoi dong thi tao tab dau tien la tab "All"
-        
+
 //============================ su kien re chuot qua item ======================================
-        listActiveUser.addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent me) {
-                Point p = me.getPoint();
-                listActiveUser.setSelectedIndex(listActiveUser.locationToIndex(p));
-                listActiveUser.setSelectionForeground(Color.RED);
-                listActiveUser.setSelectionBackground(Color.BLUE);
-                System.out.println("" + listActiveUser.getSelectedValue());
-            }
-        });
+//        listActiveUser.addMouseMotionListener(new MouseAdapter() {
+//            @Override
+//            public void mouseMoved(MouseEvent me) {
+//                Point p = me.getPoint();
+//                listActiveUser.setSelectedIndex(listActiveUser.locationToIndex(p));
+//                listActiveUser.setSelectionForeground(Color.RED);
+//                listActiveUser.setSelectionBackground(Color.BLUE);
+//
+////                System.out.println("" + listActiveUser.getSelectedValue());
+//            }
+//        });
 //=============================================================================================        
     }
 
-    public void PrintIntoTab(String who, String content, int lr) {
-        ChatTab here = findTab(who);
+    public void PrintIntoTab(String who, String content, int lr) {// ham nay de ghi mess ra tab duoc chon
+        ChatTab here = findTab(who);// dau tien tim ra tab voi ten dc chon; neu khong co thi ket qua bang null
         if (here == null) {// chua co tab voi nguoi nay
-            here = (ChatTab) mainTabbed.add(who, new ChatTab(who, CLIENT_PROCESS));
+            here = (ChatTab) mainTabbed.add(who, new ChatTab(who, CLIENT_PROCESS));//... thi tao moi tab voi ten ng nay
         }
-        DefaultTableModel model_table_chat = (DefaultTableModel) here.tablechat.getModel();
-        if (lr == 0) {
+        DefaultTableModel model_table_chat = (DefaultTableModel) here.tablechat.getModel();// model nay danh cho table ben trong chat tab (chat tab chua ben trong la mot table)
+        if (lr == 0) {// neu 0=in ben trai; nguoc lai
             model_table_chat.addRow(new Object[]{content, ""});
         } else {
             model_table_chat.addRow(new Object[]{"", content});
         }
     }
 
-    public ChatTab findTab(String who) {
-        int index = mainTabbed.indexOfTab(who);
-        ChatTab here = null;
-        if (index != -1) {
-            here = (ChatTab) mainTabbed.getComponent(index);
+    public ChatTab findTab(String who) {// ham de tim ra tab voi nguoi dc truyen vao
+        int index = mainTabbed.indexOfTab(who);// index = -1 neu khong co
+        ChatTab here = null;//khoi tao chat tab rong;
+        if (index != -1) {// tuc la co ton tai tab voi ten ng dc truyn vao
+            here = (ChatTab) mainTabbed.getComponent(index);// thi gan tab do cho here
         }
-        return here;
+        return here;// tra ve here => here = -1 neu khong co tab voi ten nguoi can tim,
     }
 
 
@@ -105,7 +101,7 @@ public class GChatUI extends javax.swing.JFrame {
             }
         });
 
-        listActiveUser.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Đang online", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("sansserif", 0, 12), new java.awt.Color(0, 127, 5))); // NOI18N
+        listActiveUser.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "● Đang online", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 12), new java.awt.Color(0, 255, 51))); // NOI18N
         listActiveUser.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         listActiveUser.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "<All>" };
@@ -116,12 +112,14 @@ public class GChatUI extends javax.swing.JFrame {
         listActiveUser.setFocusable(false);
         listActiveUser.setRequestFocusEnabled(false);
         listActiveUser.setSelectionBackground(new java.awt.Color(69, 73, 74));
+        listActiveUser.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                listActiveUserMouseMoved(evt);
+            }
+        });
         listActiveUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listActiveUserMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                listActiveUserMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 listActiveUserMouseExited(evt);
@@ -197,16 +195,13 @@ public class GChatUI extends javax.swing.JFrame {
         CLIENT_PROCESS.LogOut();
     }//GEN-LAST:event_bthihiActionPerformed
 
-    private void listActiveUserMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listActiveUserMouseEntered
-        System.out.println(listActiveUser.getSelectedValue());
-
-    }//GEN-LAST:event_listActiveUserMouseEntered
-
     private void listActiveUserMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listActiveUserMouseExited
-        listActiveUser.setSelectionForeground(new Color(187, 187, 187));
-        listActiveUser.setSelectionBackground(new Color(69, 73, 74));
-        System.out.println("tab count :"+mainTabbed.getTabCount());
-        System.out.println("cpn count:"+mainTabbed.getComponentCount());
+//        chuot thoat ra khoi list online thi...
+        listActiveUser.setSelectionForeground(new Color(187, 187, 187));// set text cua element dc chon lai mau df
+        listActiveUser.setSelectionBackground(new Color(69, 73, 74));// ---------------
+        System.out.println("tab count :" + mainTabbed.getTabCount());
+        System.out.println("cpn count:" + mainTabbed.getComponentCount());
+
 //        for (int i = 0; i < mainTabbed.getTabCount(); i++) {
 //            mainTabbed.getComponentAt(i).setForeground(new Color(187, 187, 187));
 //        }
@@ -217,8 +212,16 @@ public class GChatUI extends javax.swing.JFrame {
 //        for (int i = 0; i < mainTabbed.getTabCount(); i++) {
 //            mainTabbed.getComponentAt(i).setForeground(new Color(187, 187, 187));
 //        }
-        mainTabbed.setForegroundAt(mainTabbed.getSelectedIndex(), new Color(187,187,187));
+        mainTabbed.setForegroundAt(mainTabbed.getSelectedIndex(), new Color(187, 187, 187));
     }//GEN-LAST:event_mainTabbedMouseClicked
+
+    private void listActiveUserMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listActiveUserMouseMoved
+        Point p = evt.getPoint();
+        System.out.println("mouse moved newwwwwwwwwwwwwwwwwwwww");
+        listActiveUser.setSelectedIndex(listActiveUser.locationToIndex(p));
+        listActiveUser.setSelectionForeground(Color.RED);
+        listActiveUser.setSelectionBackground(Color.BLUE);
+    }//GEN-LAST:event_listActiveUserMouseMoved
 //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

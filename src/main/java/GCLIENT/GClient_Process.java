@@ -4,6 +4,7 @@ import GUI.GChatUI;
 import GUI.GLoginUI;
 import com.mycenter.gobject.GPacket;
 import java.awt.Color;
+import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,7 +16,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Gic
+ * @author Gic vua update
  */
 public class GClient_Process implements Runnable {
 
@@ -31,7 +32,7 @@ public class GClient_Process implements Runnable {
         for (int i = 0; i < 10; i++) {
             try {
                 CLIENT_SOCKET = new Socket(InetAddress.getByName(LOGIN_GUI.getIP()), LOGIN_GUI.getPort());// *********************************************************************
-//                CLIENT_SOCKET = new Socket(InetAddress.getByName(LOGIN_GUI.getIP()), LOGIN_GUI.getPort(),InetAddress.getByName(LOGIN_GUI.getIP()),56698);
+//                CLIENT_SOCKET = new Socket(InetAddress.getByName(LOGIN_GUI.getIP()), LOGIN_GUI.getPort(),InetAddress.getByName(LOGIN_GUI.getIP()),56698);  //danh cho test ***************
                 connected = true;
                 break;
             } catch (IOException iOException) {
@@ -58,12 +59,12 @@ public class GClient_Process implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() {// duoc chay khi thread nay dc goi start() *********************************************************************************
         boolean keepRunning = true;
-        while (keepRunning) {
+        while (keepRunning) {// loop nay giu cho code ben trong run luon luon chay 
             GPacket PACKET = null;
             try {
-                PACKET = (GPacket) IN.readObject();
+                PACKET = (GPacket) IN.readObject();// run se pausse tai day, toi khi nhan dc pkg thi no chay tiep
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(LOGIN_GUI, "Đã ngắt kết nối Server:\n" + ex.getMessage());
                 LOGIN_GUI.btConnect.setEnabled(keepRunning);
@@ -74,19 +75,21 @@ public class GClient_Process implements Runnable {
                 LOGIN_GUI.btLogin.setEnabled(!keepRunning);
                 LOGIN_GUI.btRegister.setEnabled(!keepRunning);
                 LOGIN_GUI.tbPort.selectAll();
-                keepRunning = false;
-//                for (int i = 1; i < ui.model.size(); i++) {
-//                    ui.model.removeElementAt(i);
-//                }
+//                keepRunning = false;
+
+//                System.out.println("so luong:" + CHAT_GUI.getContentPane().getComponentCount());
+                CHAT_GUI.getContentPane().removeAll();// xoa tat ca cpn ben trong form chat khi ma server down
 //                ui.clientThread.stop();
-                ex.printStackTrace();
+                ex.printStackTrace();// in  ra loi nhu bi vang loi
                 return;
             } catch (ClassNotFoundException ex) {
                 System.out.println("\nLỗi khi ép kiểu gói tin:\n" + ex.getMessage());
                 JOptionPane.showMessageDialog(LOGIN_GUI, "Lỗi khi ép kiểu gói tin:\n" + ex.getMessage());
             }
+
+            // xuong day tuc la da nhan goi tin oke 
             System.out.println("\t\t\t<<<<<" + PACKET.toString());
-            switch (PACKET.getAction()) {
+            switch (PACKET.getAction()) {// bat dau xu ly tung loai action cua pkg
                 case "OKE BABE! YOUR CONNECTION ACCEPTED :)))":
                     JOptionPane.showMessageDialog(LOGIN_GUI, "Kết nối thành công tới máy chủ !!");
                     LOGIN_GUI.tbUsername.setEnabled(keepRunning);
@@ -137,7 +140,7 @@ public class GClient_Process implements Runnable {
                     } else {
                         CHAT_GUI.MODEL_LIST_ACTIVE_USERs.removeElement(PACKET.getFirst());
                         CHAT_GUI.board.append("\n[" + PACKET.getFirst() + " đã thoát]\n");
-                        if (CHAT_GUI.findTab(PACKET.getFirst()) != null) {
+                        if (CHAT_GUI.findTab(PACKET.getFirst()) != null) {// neu tab nay
                             CHAT_GUI.PrintIntoTab(PACKET.getFirst(), "\n[" + PACKET.getFirst() + " đã thoát]\n", 0);
                             CHAT_GUI.findTab(PACKET.getFirst()).SetEnableInput(false);
                         } else {
@@ -168,7 +171,7 @@ public class GClient_Process implements Runnable {
 
                 case "THIS IS MESSAGE":
                     CHAT_GUI.PrintIntoTab(PACKET.getFirst(), PACKET.getLast(), 0);
-                    notify(CHAT_GUI.mainTabbed.indexOfTab(PACKET.getFirst()));
+                    notify(CHAT_GUI.mainTabbed.indexOfTab(PACKET.getFirst()));// popup title nay len bang cach thay doi mau sac text title
                     break;
 
                 case "THIS IS MESSAGE FOR ALL":
@@ -226,7 +229,7 @@ public class GClient_Process implements Runnable {
         }
     }
 
-   public  void un_notify(int index) {
+    public void un_notify(int index) {
         CHAT_GUI.mainTabbed.setForegroundAt(CHAT_GUI.mainTabbed.getSelectedIndex(), new Color(187, 187, 187));
     }
 }
